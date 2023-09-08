@@ -1,0 +1,9 @@
+{
+  "SchedulerSetting": [
+    {
+      "JobName": "InitCityDataJob",
+      "Crontab": "0 8 * * *",
+      "IsEnable": true
+    }
+  ]
+}

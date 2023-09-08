@@ -10,4 +10,8 @@
     <ProjectReference Include="..\..\Common\TravelMap.Core\TravelMap.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Register\" />
+  </ItemGroup>
+
 </Project>

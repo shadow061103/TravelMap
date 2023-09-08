@@ -6,11 +6,19 @@ using Hangfire.Dashboard;
 using System.Text.Json.Serialization;
 using TravelMap.Core;
 using TravelMap.Api.Filters;
+using MongoDB.Driver;
+using Hangfire.Mongo;
+using Hangfire.Mongo.Migration.Strategies.Backup;
+using Hangfire.Mongo.Migration.Strategies;
+using TravelMap.Api.Register;
 
 var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
-
+configuration.AddJsonFile("appsettings.json", false)
+             .AddJsonFile($"appsettings.{env}.json", optional: true, true)
+            .AddJsonFile($"AppData/schedulersetting.json", false);
 // Add services to the container.
 
 var services = builder.Services;
@@ -40,6 +48,12 @@ services.AddLogging(config =>
 builder.Host.UseNLog();
 
 //hangfire
+var mongoUrl = builder.Configuration.GetSection("MongoSetting").GetValue<string>("HangfireUrl");
+var mongoUrlBuilder = new MongoUrlBuilder(mongoUrl);
+var mongoClient = new MongoClient(mongoUrlBuilder.ToMongoUrl());
+
+services.RegisterAutoMapper();
+
 services.AddHangfire(configuration =>
 {
     var storageOptions = new MemoryStorageOptions()
@@ -47,8 +61,18 @@ services.AddHangfire(configuration =>
         FetchNextJobTimeout = TimeSpan.FromMinutes(60)
     };
 
-    configuration.UseMemoryStorage(storageOptions)
-    .UseConsole()
+    //configuration.UseMemoryStorage(storageOptions)
+    configuration.UseMongoStorage(mongoClient, mongoUrlBuilder.DatabaseName, new MongoStorageOptions
+    {
+        MigrationOptions = new MongoMigrationOptions
+        {
+            MigrationStrategy = new MigrateMongoMigrationStrategy(),
+            BackupStrategy = new CollectionMongoBackupStrategy()
+        },
+        Prefix = "hangfire.mongo",
+        CheckConnection = true
+    })
+     .UseConsole()
     .UseDashboardMetric(DashboardMetrics.EnqueuedAndQueueCount)
     .UseDashboardMetric(DashboardMetrics.ProcessingCount)
     .UseDashboardMetric(DashboardMetrics.FailedCount)
@@ -56,7 +80,6 @@ services.AddHangfire(configuration =>
 });
 
 services.AddHangfireServer();
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -73,6 +96,8 @@ app.UseHangfireDashboard(
                        Authorization = new[] { new HangfireAuthorizationFilter() }
                    }
                );
+
+JobRegister.SetJob(configuration);
 
 app.UseHttpsRedirection();
 
