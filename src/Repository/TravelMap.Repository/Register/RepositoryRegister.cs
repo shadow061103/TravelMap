@@ -1,6 +1,8 @@
 ﻿using TravelMap.Repository.Implements;
 using TravelMap.Repository.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
+using TravelMap.Repository.Helper;
+using TravelMap.Repository.Decorators;
 
 namespace TravelMap.Repository.Register
 {
@@ -8,7 +10,10 @@ namespace TravelMap.Repository.Register
     {
         public static void RegisterRepository(this IServiceCollection services)
         {
-            services.AddScoped<ITokenRepositroy, TokenRepositroy>();
+            services.AddSingleton<IMongoHelper, MongoHelper>();
+
+            services.AddScoped<ITokenRepositroy, TokenRepositroy>()
+                .Decorate<ITokenRepositroy, CacheTokenRepositroy>();
         }
     }
 }

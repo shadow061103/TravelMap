@@ -10,7 +10,7 @@ namespace TravelMap.Api.Controllers
         private static readonly string[] Summaries = new[]
         {
         "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-    };
+        };
 
         private readonly ILogger<WeatherForecastController> _logger;
 
@@ -40,15 +40,7 @@ namespace TravelMap.Api.Controllers
         {
             var token = await _tokenRepositroy.GetAccessToken();
 
-            return Ok(null);
-        }
-
-        [HttpGet("api_key")]
-        public async Task<IActionResult> GetApiKey()
-        {
-            var key = await _tokenRepositroy.GetApiKey();
-
-            return Ok(key);
+            return Ok(token);
         }
     }
 }

@@ -9,7 +9,5 @@ namespace TravelMap.Repository.Interfaces
         /// </summary>
         /// <returns></returns>
         Task<AccessTokenVo> GetAccessToken();
-
-        Task<ApiKeyVo> GetApiKey();
     }
 }

@@ -7,6 +7,7 @@ using TravelMap.Core.Config;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using MongoDB.Bson;
+using TravelMap.Repository.Helper;
 
 namespace TravelMap.Repository.Implements
 {
@@ -14,16 +15,16 @@ namespace TravelMap.Repository.Implements
     {
         private readonly HttpClient _httpClient;
 
-        private readonly MongoSettingConfig _mongoSetting;
+        private readonly IMongoHelper _mongoHelper;
 
         private readonly ILogger<TokenRepositroy> _logger;
 
         public TokenRepositroy(IHttpClientFactory clientFactory,
-            IOptions<MongoSettingConfig> options,
+           IMongoHelper mongoHelper,
             ILogger<TokenRepositroy> logger)
         {
             _httpClient = clientFactory.CreateClient("token_serivce");
-            _mongoSetting = options.Value;
+            _mongoHelper = mongoHelper;
             _logger = logger;
         }
 
@@ -47,15 +48,15 @@ namespace TravelMap.Repository.Implements
             _logger.LogInformation("token response {0}", responseStr);
 
             var token = JsonSerializer.Deserialize<AccessTokenVo>(responseStr);
+
             return token;
         }
 
-        public async Task<ApiKeyVo> GetApiKey()
+        private async Task<ApiKeyVo> GetApiKey()
         {
-            var client = new MongoClient(_mongoSetting.BaseUrl);
-            var db = client.GetDatabase(_mongoSetting.DatabaseName);
-            var collection = db.GetCollection<ApiKeyVo>("api_key");
+            var collection = _mongoHelper.GetMongoCollection<ApiKeyVo>("api_key");
 
+            //查全部
             var res = await collection.Find(new BsonDocument()).FirstOrDefaultAsync();
 
             return res;

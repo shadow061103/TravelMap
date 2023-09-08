@@ -12,8 +12,8 @@ using Hangfire.Mongo.Migration.Strategies.Backup;
 using Hangfire.Mongo.Migration.Strategies;
 using TravelMap.Api.Register;
 using TravelMap.Repository.Register;
-using Microsoft.Extensions.Configuration;
 using TravelMap.Core.Config;
+using TravelMap.Core.RedisCache.Register;
 
 var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
@@ -61,6 +61,7 @@ var mongoClient = new MongoClient(mongoUrlBuilder.ToMongoUrl());
 
 services.RegisterAutoMapper();
 services.RegisterRepository();
+services.RegisterRedis(configuration.GetSection("RedisUrl").Value);
 
 services.AddHangfire(configuration =>
 {
