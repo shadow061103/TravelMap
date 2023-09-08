@@ -11,6 +11,9 @@ using Hangfire.Mongo;
 using Hangfire.Mongo.Migration.Strategies.Backup;
 using Hangfire.Mongo.Migration.Strategies;
 using TravelMap.Api.Register;
+using TravelMap.Repository.Register;
+using Microsoft.Extensions.Configuration;
+using TravelMap.Core.Config;
 
 var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
@@ -47,12 +50,17 @@ services.AddLogging(config =>
 
 builder.Host.UseNLog();
 
+//config
+services.Configure<MongoSettingConfig>(configuration.GetSection("MongoSetting"));
+
+var mongoSetting = configuration.Get<MongoSettingConfig>();
 //hangfire
 var mongoUrl = builder.Configuration.GetSection("MongoSetting").GetValue<string>("HangfireUrl");
 var mongoUrlBuilder = new MongoUrlBuilder(mongoUrl);
 var mongoClient = new MongoClient(mongoUrlBuilder.ToMongoUrl());
 
 services.RegisterAutoMapper();
+services.RegisterRepository();
 
 services.AddHangfire(configuration =>
 {
@@ -80,6 +88,13 @@ services.AddHangfire(configuration =>
 });
 
 services.AddHangfireServer();
+
+//httpclient
+services.AddHttpClient("token_serivce", c =>
+{
+    c.BaseAddress = new Uri(configuration.GetSection("TokenUrl").Value);
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

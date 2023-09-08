@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using TravelMap.Repository.Interfaces;
 
 namespace TravelMap.Api.Controllers
 {
@@ -13,9 +14,13 @@ namespace TravelMap.Api.Controllers
 
         private readonly ILogger<WeatherForecastController> _logger;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        private readonly ITokenRepositroy _tokenRepositroy;
+
+        public WeatherForecastController(ILogger<WeatherForecastController> logger,
+            ITokenRepositroy tokenRepositroy)
         {
             _logger = logger;
+            _tokenRepositroy = tokenRepositroy;
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
@@ -28,6 +33,22 @@ namespace TravelMap.Api.Controllers
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
             })
             .ToArray();
+        }
+
+        [HttpGet("toekn")]
+        public async Task<IActionResult> GetToken()
+        {
+            var token = await _tokenRepositroy.GetAccessToken();
+
+            return Ok(null);
+        }
+
+        [HttpGet("api_key")]
+        public async Task<IActionResult> GetApiKey()
+        {
+            var key = await _tokenRepositroy.GetApiKey();
+
+            return Ok(key);
         }
     }
 }
