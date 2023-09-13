@@ -14,6 +14,7 @@ using TravelMap.Api.Register;
 using TravelMap.Repository.Register;
 using TravelMap.Core.Config;
 using TravelMap.Core.RedisCache.Register;
+using TravelMap.Service.Register;
 
 var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
@@ -61,6 +62,7 @@ var mongoClient = new MongoClient(mongoUrlBuilder.ToMongoUrl());
 
 services.RegisterAutoMapper();
 services.RegisterRepository();
+services.RegisterService();
 services.RegisterRedis(configuration.GetSection("RedisUrl").Value);
 
 services.AddHangfire(configuration =>
@@ -94,6 +96,11 @@ services.AddHangfireServer();
 services.AddHttpClient("token_serivce", c =>
 {
     c.BaseAddress = new Uri(configuration.GetSection("TokenUrl").Value);
+});
+
+services.AddHttpClient("city_serivce", c =>
+{
+    c.BaseAddress = new Uri(configuration.GetSection("CityUrl").Value);
 });
 
 var app = builder.Build();

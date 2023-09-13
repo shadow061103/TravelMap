@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using TravelMap.Repository.Interfaces;
+using TravelMap.Service.Interfaces;
 
 namespace TravelMap.Api.Controllers
 {
@@ -16,11 +17,15 @@ namespace TravelMap.Api.Controllers
 
         private readonly ITokenRepositroy _tokenRepositroy;
 
+        private readonly IInitCityDataService _initCityDataService;
+
         public WeatherForecastController(ILogger<WeatherForecastController> logger,
-            ITokenRepositroy tokenRepositroy)
+            ITokenRepositroy tokenRepositroy,
+            IInitCityDataService initCityDataService)
         {
             _logger = logger;
             _tokenRepositroy = tokenRepositroy;
+            _initCityDataService = initCityDataService;
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
@@ -41,6 +46,14 @@ namespace TravelMap.Api.Controllers
             var token = await _tokenRepositroy.GetAccessToken();
 
             return Ok(token);
+        }
+
+        [HttpGet("city")]
+        public async Task<IActionResult> GetCity()
+        {
+            await _initCityDataService.CreateTaiwanCityData();
+
+            return Ok(null);
         }
     }
 }
