@@ -7,5 +7,7 @@ namespace TravelMap.Repository.Interfaces
         Task<IEnumerable<TourisSpotApiModel>> GetTouristSpotData(string accessToken, string city);
 
         Task AddTouristSpotData(IEnumerable<TourisSpotVo> spots);
+
+        Task<IEnumerable<TourisSpotVo>> FindNearTourist(double latitude, double longitude);
     }
 }

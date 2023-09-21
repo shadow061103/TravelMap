@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http.Extensions;
+using MongoDB.Driver;
+using MongoDB.Driver.GeoJsonObjectModel;
 using System.Text.Json;
 using TravelMap.Repository.Helper;
 using TravelMap.Repository.Interfaces;
@@ -42,6 +44,21 @@ namespace TravelMap.Repository.Implements
             var collection = _mongoHelper.GetMongoCollection<TourisSpotVo>("tourist_spot");
 
             await collection.InsertManyAsync(spots);
+        }
+
+        public async Task<IEnumerable<TourisSpotVo>> FindNearTourist(double latitude, double longitude)
+        {
+            var collection = _mongoHelper.GetMongoCollection<TourisSpotVo>("tourist_spot");
+
+            var point = GeoJson.Point(GeoJson.Geographic(longitude, latitude));
+
+            var builder = Builders<TourisSpotVo>.Filter;
+
+            var filter = builder.Near(x => x.Location, point, maxDistance: 2000, minDistance: 500);
+
+            var res = await collection.Find(filter).ToListAsync();
+
+            return res;
         }
     }
 }

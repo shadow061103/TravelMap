@@ -16,15 +16,19 @@ namespace TravelMap.Api.Controllers
 
         private readonly IToursitSpotService _toursitSpotService;
 
+        private readonly ITouristSpotRepository _touristSpotRepository;
+
         public WeatherForecastController(ILogger<WeatherForecastController> logger,
             ITokenRepositroy tokenRepositroy,
             IInitCityDataService initCityDataService,
-            IToursitSpotService toursitSpotService)
+            IToursitSpotService toursitSpotService,
+            ITouristSpotRepository touristSpotRepository)
         {
             _logger = logger;
             _tokenRepositroy = tokenRepositroy;
             _initCityDataService = initCityDataService;
             _toursitSpotService = toursitSpotService;
+            _touristSpotRepository = touristSpotRepository;
         }
 
         [HttpGet("toekn")]
@@ -46,8 +50,10 @@ namespace TravelMap.Api.Controllers
         [HttpGet("spot")]
         public async Task<IActionResult> GetSpot()
         {
-            await _toursitSpotService.CreatetouristSpotData();
-            return Ok(null);
+            //await _toursitSpotService.CreatetouristSpotData();
+
+            var temp = await _touristSpotRepository.FindNearTourist(25.057210, 121.535097);
+            return Ok(temp);
         }
     }
 }
