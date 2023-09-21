@@ -16,6 +16,7 @@ namespace TravelMap.Repository.Register
                 .Decorate<ITokenRepositroy, CacheTokenRepositroy>();
 
             services.AddScoped<ICityRepository, CityRepository>();
+            services.AddScoped<ITouristSpotRepository, TouristSpotRepository>();
         }
     }
 }

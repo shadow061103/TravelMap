@@ -12,5 +12,7 @@ namespace TravelMap.Repository.Interfaces
         Task<IEnumerable<CityApiModel>> GetTaiwanCityData(string accessToken);
 
         Task AddCityData(IEnumerable<CityVo> cities);
+
+        Task<IEnumerable<CityVo>> GetCityData();
     }
 }

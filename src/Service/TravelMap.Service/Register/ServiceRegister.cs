@@ -9,6 +9,7 @@ namespace TravelMap.Service.Register
         public static void RegisterService(this IServiceCollection services)
         {
             services.AddScoped<IInitCityDataService, InitCityDataService>();
+            services.AddScoped<IToursitSpotService, ToursitSpotService>();
         }
     }
 }

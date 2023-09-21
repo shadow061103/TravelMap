@@ -103,6 +103,11 @@ services.AddHttpClient("city_serivce", c =>
     c.BaseAddress = new Uri(configuration.GetSection("CityUrl").Value);
 });
 
+services.AddHttpClient("tourist_service", c =>
+{
+    c.BaseAddress = new Uri(configuration.GetSection("TouristUrl").Value);
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

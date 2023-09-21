@@ -19,13 +19,17 @@ namespace TravelMap.Api.Controllers
 
         private readonly IInitCityDataService _initCityDataService;
 
+        private readonly IToursitSpotService _toursitSpotService;
+
         public WeatherForecastController(ILogger<WeatherForecastController> logger,
             ITokenRepositroy tokenRepositroy,
-            IInitCityDataService initCityDataService)
+            IInitCityDataService initCityDataService,
+            IToursitSpotService toursitSpotService)
         {
             _logger = logger;
             _tokenRepositroy = tokenRepositroy;
             _initCityDataService = initCityDataService;
+            _toursitSpotService = toursitSpotService;
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
@@ -53,6 +57,13 @@ namespace TravelMap.Api.Controllers
         {
             await _initCityDataService.CreateTaiwanCityData();
 
+            return Ok(null);
+        }
+
+        [HttpGet("spot")]
+        public async Task<IActionResult> GetSpot()
+        {
+            await _toursitSpotService.CreatetouristSpotData();
             return Ok(null);
         }
     }

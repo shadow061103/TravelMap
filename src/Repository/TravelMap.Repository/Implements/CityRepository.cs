@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http.Extensions;
+using MongoDB.Bson;
+using MongoDB.Driver;
 using System.Text.Json;
 using TravelMap.Repository.Helper;
 using TravelMap.Repository.Interfaces;
@@ -41,6 +43,16 @@ namespace TravelMap.Repository.Implements
             var collection = _mongoHelper.GetMongoCollection<CityVo>("city");
 
             await collection.InsertManyAsync(cities);
+        }
+
+        public async Task<IEnumerable<CityVo>> GetCityData()
+        {
+            var collection = _mongoHelper.GetMongoCollection<CityVo>("city");
+
+            //查全部
+            var res = await collection.Find(new BsonDocument()).ToListAsync();
+
+            return res;
         }
     }
 }
