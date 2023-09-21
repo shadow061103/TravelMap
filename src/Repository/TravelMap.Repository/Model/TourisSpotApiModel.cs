@@ -19,6 +19,10 @@
     {
         public string PictureUrl1 { get; set; }
         public string PictureDescription1 { get; set; }
+        public string PictureUrl2 { get; set; }
+        public string PictureDescription2 { get; set; }
+        public string PictureUrl3 { get; set; }
+        public string PictureDescription3 { get; set; }
     }
 
     public class PositionApiModel

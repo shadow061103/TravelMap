@@ -10,6 +10,8 @@ namespace TravelMap.Service.Register
         {
             services.AddScoped<IInitCityDataService, InitCityDataService>();
             services.AddScoped<IToursitSpotService, ToursitSpotService>();
+            services.AddScoped<IRestaurantService, RestaurantService>();
+            services.AddScoped<IHotelService, HotelService>();
         }
     }
 }

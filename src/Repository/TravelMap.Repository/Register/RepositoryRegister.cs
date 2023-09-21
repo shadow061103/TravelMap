@@ -17,6 +17,8 @@ namespace TravelMap.Repository.Register
 
             services.AddScoped<ICityRepository, CityRepository>();
             services.AddScoped<ITouristSpotRepository, TouristSpotRepository>();
+            services.AddScoped<IRestaurantRepository, RestaurantRepository>();
+            services.AddScoped<IHotelRepository, HotelRepository>();
         }
     }
 }

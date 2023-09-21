@@ -5,9 +5,9 @@ using TravelMap.Service.Interfaces;
 
 namespace TravelMap.Service.Implements
 {
-    public class ToursitSpotService : IToursitSpotService
+    public class HotelService : IHotelService
     {
-        private readonly ITouristSpotRepository _touristSpotRepository;
+        private readonly IHotelRepository _hotelRepository;
 
         private readonly ICityRepository _cityRepository;
 
@@ -15,18 +15,18 @@ namespace TravelMap.Service.Implements
 
         private readonly IMapper _mapper;
 
-        public ToursitSpotService(ITouristSpotRepository touristSpotRepository,
+        public HotelService(IHotelRepository hotelRepository,
             ICityRepository cityRepository,
             ITokenRepositroy tokenRepositroy,
             IMapper mapper)
         {
-            _touristSpotRepository = touristSpotRepository;
+            _hotelRepository = hotelRepository;
             _cityRepository = cityRepository;
             _tokenRepositroy = tokenRepositroy;
             _mapper = mapper;
         }
 
-        public async Task CreatetouristSpotData()
+        public async Task CreateHotelData()
         {
             var token = await _tokenRepositroy.GetAccessToken();
 
@@ -34,16 +34,20 @@ namespace TravelMap.Service.Implements
 
             foreach (var item in cities)
             {
-                var spots = await _touristSpotRepository.GetTouristSpotData(token.AccessToken, item.City);
+                var hotels = await _hotelRepository.GetHotelDataByCity(token.AccessToken, item.City);
 
-                var spotVos = _mapper.Map<List<TourisSpotVo>>(spots);
+                if (hotels.Any() == false)
+                    continue;
 
-                spotVos.ForEach(c =>
+                var hotelVos = _mapper.Map<List<HotelVo>>(hotels);
+
+                hotelVos.ForEach(c =>
                 {
                     c.City = item.City;
+                    c.CityName = item.CityName;
                 });
 
-                await _touristSpotRepository.AddTouristSpotData(spotVos);
+                await _hotelRepository.AddHotelData(hotelVos);
             }
         }
     }

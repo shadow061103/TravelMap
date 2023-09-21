@@ -4,6 +4,21 @@
       "JobName": "InitCityDataJob",
       "Crontab": "0 8 * * *",
       "IsEnable": true
+    },
+    {
+      "JobName": "InitTouristSpotJo",
+      "Crontab": "0 8 * * *",
+      "IsEnable": true
+    },
+    {
+      "JobName": "InitRestaurantJob",
+      "Crontab": "0 8 * * *",
+      "IsEnable": true
+    },
+    {
+      "JobName": "InitHotelJob",
+      "Crontab": "0 8 * * *",
+      "IsEnable": true
     }
   ]
 }

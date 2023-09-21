@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Driver.GeoJsonObjectModel;
 
 namespace TravelMap.Repository.Model
 {
@@ -44,5 +45,8 @@ namespace TravelMap.Repository.Model
 
         [BsonElement("city_name")]
         public string CityName { get; set; }
+
+        [BsonElement("location")]
+        public GeoJsonPoint<GeoJson2DGeographicCoordinates> Location { get; set; }
     }
 }
